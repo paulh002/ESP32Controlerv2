@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{803FD0C6-D64E-4E16-9DC3-1DAEC859A3D2}") = "ESP32Controlerv2", "ESP32Controlerv2.vgdbproj", "{C5CC6D4C-F172-4D2C-B5E8-7ABF01536846}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ESP32_Dev_Module = Debug|ESP32_Dev_Module
+		Release|ESP32_Dev_Module = Release|ESP32_Dev_Module
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5CC6D4C-F172-4D2C-B5E8-7ABF01536846}.Debug|ESP32_Dev_Module.ActiveCfg = Debug|ESP32_Dev_Module
+		{C5CC6D4C-F172-4D2C-B5E8-7ABF01536846}.Debug|ESP32_Dev_Module.Build.0 = Debug|ESP32_Dev_Module
+		{C5CC6D4C-F172-4D2C-B5E8-7ABF01536846}.Release|ESP32_Dev_Module.ActiveCfg = Release|ESP32_Dev_Module
+		{C5CC6D4C-F172-4D2C-B5E8-7ABF01536846}.Release|ESP32_Dev_Module.Build.0 = Release|ESP32_Dev_Module
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7D26F818-144D-415F-9FF5-10412E1FE2B3}
+	EndGlobalSection
+EndGlobal
