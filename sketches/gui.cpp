@@ -118,7 +118,7 @@ void init_gui(lv_display_t *display)
 	gui_band.init_gui(tabview_tab, button_group);
 }
 
-volatile int lastEncoding{}, lastEncoding2{};
+volatile int lastEncoding{}, lastEncoding1{}, lastEncoding2{};
 int total = 0;
 int tx = 0;
 int value, currentRxtx = 0;
@@ -174,6 +174,16 @@ void gui_loop()
 		//guirx.value(CatInterface.GetSM());
 		lastEncoding2 = currMillis;
 	}
+
+	if (!gui_band.have_buttons() && (currMillis - lastEncoding1 > 2000))
+	{
+		CatInterface.Getag();
+		CatInterface.Getrg();
+		CatInterface.Getig();
+		CatInterface.Requestinformation(2);
+		lastEncoding1 = currMillis;
+	}
+	
 	lv_timer_handler(); /* let the GUI do its work */
 	vTaskDelay(10);
 }

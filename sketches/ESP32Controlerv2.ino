@@ -47,7 +47,7 @@ void my_touchpad_read(lv_indev_t *indev, lv_indev_data_t *data)
 
 		/*Set the coordinates*/
 		data->point.x = touchY;
-		data->point.y = touchX;
+		data->point.y = screenWidth - touchX;
 	}
 }
 

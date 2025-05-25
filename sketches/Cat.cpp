@@ -3,7 +3,7 @@
 #include <string>
 #include "FT891_CAT.h"
 #include "Cat.h"
-
+#include "Gui_band.h"
 
 Cat CatInterface;
 
@@ -150,7 +150,7 @@ void Comm::Processinformation(std::string s)
 		break;
 	case '1':
 		break;
-/*	case '2':
+	case '2':
 		{
 			std::string s1;
 
@@ -173,7 +173,6 @@ void Comm::Processinformation(std::string s)
 			}
 			break;
 		}
-*/
 	}
 }
 
