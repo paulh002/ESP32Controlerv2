@@ -25,6 +25,9 @@
         <string>sketches\gui.h</string>
         <string>sketches\Cat.h</string>
         <string>sketches\SwrBarClass.h</string>
+        <string>sketches\mainTab.h</string>
+        <string>sketches\Gui_band.h</string>
+        <string>sketches\guiRx.h</string>
       </OtherFiles>
     </ProjectModeSettings>
   </Project>

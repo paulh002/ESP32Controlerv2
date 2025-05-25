@@ -4,8 +4,11 @@
 #include "Encoders.h"
 #include "Cat.h"
 #include "SwrBarClass.h"
+#include "mainTab.h"
+#include "Gui_band.h"
+#include "guiRx.h"
 
-lv_obj_t *bg_top;
+lv_obj_t *bg_top, *tabview_tab;
 lv_obj_t *label_status, *smeterLabel;
 lv_obj_t *button[5];
 
@@ -16,69 +19,19 @@ lv_style_t top_style;
 
 lv_group_t *button_group;
 
-SwrBarClass SmeterBar;
-
 const int topHeight = 25;
-const uint32_t screenWidth = 320;
-const uint32_t screenHeight = 240;
+const int screenWidth = 320;
+const int screenHeight = 240;
 const int nobuttons = 6;
 const int bottombutton_width = (screenWidth / nobuttons) - 2;
 const int bottombutton_width1 = (screenWidth / nobuttons);
 const int tab_margin = 20;
+const int tab_size_y = 40;
 const int x_number_buttons = 3;
 const int y_number_buttons = 3;
 const int x_margin = 5;
 const int y_margin = 5;
-int button_selected = -1;
 String command{"VOL"};
-
-void button_event_handler(lv_event_t *e)
-{
-
-	lv_obj_t *obj = (lv_obj_t *)lv_event_get_target(e);
-	lv_obj_t *label = (lv_obj_t *)lv_obj_get_child(obj, 0L);
-	char *ptr = lv_label_get_text(label);
-
-	for (int i = 0; i < 3; i++)
-	{
-		if (button[i] != obj)
-		{
-			lv_obj_clear_state(button[i], LV_STATE_CHECKED);
-		}
-		else
-		{
-			if (i != button_selected)
-			{
-				button_selected = i;
-				switch (i)
-				{
-				case 0:
-					command = String("VOL");
-					break;
-				case 1:
-					command = String("GAIN");
-					break;
-				case 2:
-					command = String("RF");
-					break;
-					/*				case 3:
-										guirx.command = String("AGC");
-										break;
-									case 4:
-										guirx.command = String("TUNE");
-										break;
-					*/
-				}
-			}
-			else
-			{
-				button_selected = -1;
-				command = String("");
-				lv_obj_clear_state(button[i], LV_STATE_CHECKED);
-			}
-		}
-	}
-}
 
 volatile lv_indev_state_t enc_button_state = LV_INDEV_STATE_REL;
 
@@ -147,67 +100,22 @@ void init_gui(lv_display_t *display)
 	lv_obj_set_style_text_color(label_status, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
 	lv_obj_set_style_text_opa(label_status, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-	
-	
-	for (int i = 0; i < 3; i++)
-	{
-		button[i] = lv_btn_create(lv_screen_active());
-		lv_group_add_obj(button_group, button[i]);
-		lv_obj_add_style(button[i], &style_btn, 0);
-		lv_obj_add_event_cb(button[i], button_event_handler, LV_EVENT_CLICKED, NULL);
-		lv_obj_align(button[i], LV_ALIGN_BOTTOM_LEFT, ibutton_x * button_width_margin, ibutton_y * button_height_margin);
-		lv_obj_add_flag(button[i], LV_OBJ_FLAG_CHECKABLE);
-		lv_obj_set_size(button[i], button_width, button_height);
+	tabview_tab = lv_tabview_create(lv_scr_act());
+	lv_tabview_set_tab_bar_position(tabview_tab, LV_DIR_BOTTOM);
+	lv_tabview_set_tab_bar_size(tabview_tab, tab_size_y);
+	lv_obj_set_pos(tabview_tab, 0, topHeight);
+	lv_obj_set_size(tabview_tab, screenWidth, screenHeight - topHeight);
+	lv_obj_add_style(tabview_tab, &page_style, 0);
+	lv_obj_set_style_pad_hor(tabview_tab, 0, LV_PART_MAIN);
+	lv_obj_set_style_pad_ver(tabview_tab, 0, LV_PART_MAIN);
+	lv_obj_clear_flag(tabview_tab, LV_OBJ_FLAG_SCROLLABLE);
+	lv_obj_t *tab_buttons = lv_tabview_get_tab_btns(tabview_tab);
+	lv_obj_add_style(tab_buttons, &style_btn_tab, 0);
+	//lv_obj_add_event_cb(tabview_tab, tabview_event_handler, LV_EVENT_VALUE_CHANGED, NULL);
 
-		lv_obj_t *lv_label = lv_label_create(button[i]);
-
-		char str[20];
-		switch (i)
-		{
-		case 0:
-			strcpy(str, "Volume");
-			command = String("VOL");
-			button_selected = i;
-			lv_obj_add_state(button[i], LV_STATE_CHECKED);
-			break;
-		case 1:
-			strcpy(str, "Gain");
-			break;
-		case 2:
-			strcpy(str, "RF");
-			break;
-		case 3:
-			strcpy(str, "Agc");
-			break;
-		case 4:
-			strcpy(str, "Tune");
-			break;
-		}
-
-		lv_label_set_text(lv_label, str);
-		lv_obj_center(lv_label);
-
-		ibutton_x++;
-		if (ibutton_x >= x_number_buttons)
-		{
-			ibutton_x = 0;
-			ibutton_y++;
-		}
-	}
-	
-	smeterLabel = lv_label_create(lv_screen_active());
-	lv_obj_set_width(smeterLabel, LV_SIZE_CONTENT);	 /// 1
-	lv_obj_set_height(smeterLabel, LV_SIZE_CONTENT); /// 1
-	lv_obj_set_x(smeterLabel, 0);
-	lv_obj_align(smeterLabel, LV_ALIGN_CENTER, 0, -40);
-	lv_label_set_text(smeterLabel, "S         1     3     5     7     9     20     40     60");
-	lv_obj_set_style_text_color(smeterLabel, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
-	lv_obj_set_style_text_opa(smeterLabel, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-	SmeterBar.init(lv_screen_active(), 6 * (screenWidth / 8), 30);
-	SmeterBar.align(lv_screen_active(), LV_ALIGN_TOP_MID, 0, 90);
-	SmeterBar.SetRange(120);
-	
+	guirx.init(tabview_tab, button_group);
+	mainTabSwr.init(tabview_tab, button_group);
+	gui_band.init_gui(tabview_tab, button_group);
 }
 
 volatile int lastEncoding{}, lastEncoding2{};
@@ -246,7 +154,7 @@ void gui_loop()
 	decoder.ClearEncoder(1);
 	if (count_button)
 	{
-		switch (button_selected)
+		switch (guirx.button_selected)
 		{
 		case 0: // Volume
 			CatInterface.Setag(count_button);
@@ -263,10 +171,9 @@ void gui_loop()
 	int currMillis = millis();
 	if (currMillis - lastEncoding2 > 100)
 	{
-		SmeterBar.value(CatInterface.GetSM());
+		//guirx.value(CatInterface.GetSM());
 		lastEncoding2 = currMillis;
 	}
-
 	lv_timer_handler(); /* let the GUI do its work */
 	vTaskDelay(10);
 }
